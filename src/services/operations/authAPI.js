@@ -6,6 +6,9 @@ import { setUser } from "../../slices/profileSlice"
 import { apiConnector } from "../apiConnector"
 import { endpoints } from "../apis"
 
+
+
+
 const {
   SENDOTP_API,
   SIGNUP_API,
@@ -14,11 +17,13 @@ const {
   RESETPASSWORD_API,
 } = endpoints
 
+
 export function sendOtp(email, navigate) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
     try {
+    
       const response = await apiConnector("POST", SENDOTP_API, {
         email,
         checkUserPresent: true,
@@ -31,10 +36,20 @@ export function sendOtp(email, navigate) {
         throw new Error(response.data.message)
       }
 
-      toast.success("OTP Sent Successfully")
+      toast.success("OTP Sent Successfully check your spam folder")
       navigate("/verify-email")
     } catch (error) {
       console.log("SENDOTP API ERROR............", error)
+      if (error.response) {
+        
+        console.log("Response status:", error.response.status);
+        
+      } else if (error.request) {
+        console.log("Request data:", error.request);
+        console.log("Request status:", error.request.status); // Add this
+      } else {
+        console.log("Error message:", error.message);
+      }
       toast.error("Could Not Send OTP")
     }
     dispatch(setLoading(false))
@@ -51,7 +66,9 @@ export function signUp(
   confirmPassword,
   otp,
   navigate
-) {
+) 
+
+{
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
@@ -75,6 +92,7 @@ export function signUp(
       navigate("/login")
     } catch (error) {
       console.log("SIGNUP API ERROR............", error)
+      console.log("erro in singup" , error.message);
       toast.error("Signup Failed")
       navigate("/signup")
     }

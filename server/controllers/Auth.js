@@ -11,6 +11,8 @@ require("dotenv").config()
 // Signup Controller for Registering USers
 
 exports.signup = async (req, res) => {
+
+  console.log("signup request body:", req.body); // Log the incoming request data
   try {
     // Destructure fields from the request body
     const {
@@ -57,7 +59,7 @@ exports.signup = async (req, res) => {
 
     // Find the most recent OTP for the email
     const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1)
-    console.log(response)
+    console.log("OTP response:", response); // Log the OTP response
     if (response.length === 0) {
       // OTP not found for the email
       return res.status(400).json({
@@ -180,6 +182,8 @@ exports.login = async (req, res) => {
 }
 // Send OTP For Email Verification
 exports.sendotp = async (req, res) => {
+
+  console.log("sendotp request body:", req.body); // Log the incoming request data
   try {
     const { email } = req.body
 

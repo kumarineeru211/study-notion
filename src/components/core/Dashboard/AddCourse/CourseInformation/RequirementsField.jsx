@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function RequirementsField({
   name,
@@ -7,37 +7,32 @@ export default function RequirementsField({
   register,
   setValue,
   errors,
-  getValues,
 }) {
-  const { editCourse, course } = useSelector((state) => state.course)
-  const [requirement, setRequirement] = useState("")
-  const [requirementsList, setRequirementsList] = useState([])
+  const { editCourse, course } = useSelector((state) => state.course);
+  const [requirement, setRequirement] = useState("");
+  const [requirementsList, setRequirementsList] = useState([]);
 
   useEffect(() => {
-    if (editCourse) {
-      setRequirementsList(course?.instructions)
+    if (editCourse && course?.instructions) {
+      setRequirementsList(course.instructions);
     }
-    register(name, { required: true, validate: (value) => value.length > 0 })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    register(name, { required: true, validate: (value) => value.length > 0 });
+  }, [register, editCourse, course, name]);
 
   useEffect(() => {
-    setValue(name, requirementsList)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requirementsList])
+    setValue(name, requirementsList);
+  }, [requirementsList, setValue, name]);
 
   const handleAddRequirement = () => {
     if (requirement) {
-      setRequirementsList([...requirementsList, requirement])
-      setRequirement("")
+      setRequirementsList((prevList) => [...prevList, requirement]);
+      setRequirement("");
     }
-  }
+  };
 
   const handleRemoveRequirement = (index) => {
-    const updatedRequirements = [...requirementsList]
-    updatedRequirements.splice(index, 1)
-    setRequirementsList(updatedRequirements)
-  }
+    setRequirementsList((prevList) => prevList.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="flex flex-col space-y-2">
@@ -62,12 +57,12 @@ export default function RequirementsField({
       </div>
       {requirementsList.length > 0 && (
         <ul className="mt-2 list-inside list-disc">
-          {requirementsList.map((requirement, index) => (
+          {requirementsList.map((req, index) => (
             <li key={index} className="flex items-center text-richblack-5">
-              <span>{requirement}</span>
+              <span>{req}</span>
               <button
                 type="button"
-                className="ml-2 text-xs text-pure-greys-300 "
+                className="ml-2 text-xs text-pure-greys-300"
                 onClick={() => handleRemoveRequirement(index)}
               >
                 clear
@@ -82,5 +77,5 @@ export default function RequirementsField({
         </span>
       )}
     </div>
-  )
+  );
 }
